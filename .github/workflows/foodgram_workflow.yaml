@@ -67,6 +67,7 @@ jobs:
         script: |
           sudo docker pull brideshead/foodgram_backend:latest
           sudo docker pull brideshead/foodgram_frontend:latest
+          cd . infra/
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
