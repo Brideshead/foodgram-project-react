@@ -11,6 +11,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed:
         Проверяем наличии подписки.
+        Returns:
+            Если нет - просто False.
+            Если да - модель пользователя-подписчика.
     """
 
     is_subscribed = serializers.SerializerMethodField()
@@ -39,7 +42,9 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """Для созданого нового пользователя.
 
     def validate_password:
-            С проверкой вводимого пароля.
+            Валидация вводимого пароля.
+        Returns:
+            Пароль прошедший валидацию.
     """
     class Meta:
         model = User
@@ -70,7 +75,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-
+    """Базовый сериализатор ингредиентов."""
     class Meta:
         model = Ingredient
         fields = ['id', 'name', 'measurement_unit']
@@ -78,7 +83,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-
+    """Сериализация ингредиентов, входящих в рецепт."""
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
         source='ingredient.id',
@@ -95,6 +100,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 
 
 class IngredientsAddSerializer(serializers.ModelSerializer):
+    """Сериализация ингредиентов при создании рецепта."""
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
         source='ingredient.id')
@@ -110,6 +116,18 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSeriaizer(serializers.ModelSerializer):
+    """Серилазатор на чтение созданныз рецептов.
+
+    def get_is_favorited:
+        Проверка добавлен ли рецепт в избранное.
+        Returns:
+            Если нет - просто False.
+            Если да- модель избранного рецепта.
+    def get_is_in_shopping_cart:
+        Проверка добавлен ли рецепт в список покупок.
+            Если нет - просто False.
+            Если да- модель рецепта из списка покупок.
+    """
     author = UserSerializer()
     tags = TagSerializer(many=True, read_only=True)
     ingredients = IngredientsAddSerializer(

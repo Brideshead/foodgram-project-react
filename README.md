@@ -1,4 +1,4 @@
-![foodgram-project-react Workflow Status](https://github.com/Brideshead/foodgram-project-react/actions/workflows/foodgram-project-react.yml/badge.svg?branch=master&event=push)
+![foodgram-project-react](https://github.com/Brideshead/foodgram-project-react/actions/workflows/foodgram-project-react.yml/badge.svg?branch=master&event=push)
 
 
 # Foodgram продуктовый помощник. Дипломный проект студента Яндекс Практикум Богоевич Александра
