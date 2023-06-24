@@ -63,16 +63,10 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-
+    """Общиий сериализатор тегов."""
     class Meta:
         model = Tag
         fields = ['id', 'name', 'color', 'slug']
-
-
-class TaggedSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Tagged
-        fields = ['id', 'recipe', 'tag']
 
 
 class IngredientSerializer(serializers.ModelSerializer):
