@@ -32,13 +32,11 @@ class RecipesFilter(filters.FilterSet):
             return queryset
         if value:
             return queryset.filter(favorite_recipe__user=self.request.user)
-        else:
-            return queryset.exclude(favorite_recipe__user=self.request.user)
+        return queryset.exclude(favorite_recipe__user=self.request.user)
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         if self.request.user.is_anonymous:
             return queryset
         if value:
             return queryset.filter(shopping_cart__user=self.request.user)
-        else:
-            return queryset.exclude(shopping_cart__user=self.request.user)
+        return queryset.exclude(shopping_cart__user=self.request.user)

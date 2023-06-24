@@ -194,19 +194,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 serializer.data,
                 status=status.HTTP_201_CREATED,
             )
-        else:
-            serializer = ShoppingCartSerializer(
-                data=data,
-                context={'request': request},
-            )
-            serializer.is_valid(raise_exception=True)
-            ShoppingCart.objects.filter(
-                user=serializer.data.get('user'),
-                recipe=serializer.data.get('recipe')).delete()
-            return Response(
-                {'message': f'Вы удалили {recipe} из списка покупок!'},
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        serializer = ShoppingCartSerializer(
+            data=data,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        ShoppingCart.objects.filter(
+            user=serializer.data.get('user'),
+            recipe=serializer.data.get('recipe')).delete()
+        return Response(
+            {'message': f'Вы удалили {recipe} из списка покупок!'},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     @action(
         methods=['GET'],

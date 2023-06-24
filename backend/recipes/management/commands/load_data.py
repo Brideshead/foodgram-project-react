@@ -13,7 +13,7 @@ class Command(BaseCommand):
             f'{settings.BASE_DIR}/data/ingredients.csv',
             'r',
             encoding='utf-8',
-            ) as file:
+        ) as file:
             file_reader = csv.reader(file)
             for row in file_reader:
                 name, measurement_unit = row
@@ -21,5 +21,4 @@ class Command(BaseCommand):
                     name=name,
                     measurement_unit=measurement_unit)
 
-        self.stdout.write(self.style.SUCCESS('Ингридиенты загружены!'))        
-
+        self.stdout.write(self.style.SUCCESS('Ингридиенты загружены!'))
