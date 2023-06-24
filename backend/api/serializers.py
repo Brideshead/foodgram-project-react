@@ -127,6 +127,8 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
         Проверка добавлен ли рецепт в список покупок.
             Если нет - просто False.
             Если да- модель рецепта из списка покупок.
+    def validate_ingredients:
+        Валидация добавляемых ингредиентов.        
     """
     author = UserSerializer()
     tags = TagSerializer(many=True, read_only=True)
@@ -182,6 +184,13 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         Проверка добавлен ли рецепт в список покупок.
             Если нет - просто False.
             Если да- модель рецепта из списка покупок.
+        Returns:
+            ValidationError если количество ингредиентов
+            меньше одного, или если в рецепт вообще не 
+            добавлены ингредиенты, также проверяет что
+            в рецепт входят только уникальные ингредиенты.
+            Если ингредиенты проходят валидацию, 
+            возвращает список ингредиентов. 
     """
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
