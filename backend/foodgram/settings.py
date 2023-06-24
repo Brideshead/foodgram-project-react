@@ -14,6 +14,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '51.250.87.5',
+    'backend',
 ]
 
 AUTH_USER_MODEL = 'users.User'
