@@ -116,7 +116,7 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
 
 
 class RecipeReadSeriaizer(serializers.ModelSerializer):
-    """Серилазатор на чтение созданныз рецептов.
+    """Серилазатор на чтение созданных рецептов.
 
     def get_is_favorited:
         Проверка добавлен ли рецепт в избранное.
@@ -171,6 +171,18 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
 
 
 class RecipeAddSerializer(serializers.ModelSerializer):
+    """Серилазатор на чтение созданных рецептов.
+
+    def get_is_favorited:
+        Проверка добавлен ли рецепт в избранное.
+        Returns:
+            Если нет - просто False.
+            Если да- модель избранного рецепта.
+    def get_is_in_shopping_cart:
+        Проверка добавлен ли рецепт в список покупок.
+            Если нет - просто False.
+            Если да- модель рецепта из списка покупок.
+    """
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tag.objects.all(),
