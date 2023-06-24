@@ -67,7 +67,7 @@ jobs:
         script: |
           sudo docker pull brideshead/foodgram_frontend:latest
           sudo docker pull brideshead/foodgram_backend:latest
-          cd "infra"
+          cd . "infra"
           sudo docker-compose stop
           sudo docker-compose rm backend
     - name: docker-compose up
@@ -78,7 +78,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          cd "infra"
+          cd . "infra"
           sudo touch .env
 
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
