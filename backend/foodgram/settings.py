@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '51.250.87.5',
+    'backend',
 ]
 
 AUTH_USER_MODEL = 'users.User'
