@@ -67,19 +67,10 @@ jobs:
         script: |
           sudo docker pull brideshead/foodgram_frontend:latest
           sudo docker pull brideshead/foodgram_backend:latest
-          cd . "infra"
           sudo docker-compose stop
           sudo docker-compose rm backend
-    - name: docker-compose up
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USER }}
-        key: ${{ secrets.SSH_KEY }}
-        passphrase: ${{ secrets.PASSPHRASE }}
-        script: |
-          cd . "infra"
-          sudo touch .env
+          rm .rnv
+          touch .env
 
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
           echo POSTGRES_DB=${{ secrets.DB_NAME }} >> .env
@@ -88,7 +79,6 @@ jobs:
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           echo SECRET_KEY="${{ secrets.SECRET_KEY }}" >> .env
-          echo DEBUG=False >> .env
           sudo docker-compose up -d --build
           
   send_message:
