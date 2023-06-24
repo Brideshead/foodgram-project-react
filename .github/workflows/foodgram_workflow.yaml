@@ -50,7 +50,7 @@ jobs:
         with:
           context: frontend/
           push: true
-          tags: bridshead/foodgram_frontend:latest
+          tags: brideshead/foodgram_frontend:latest
       
   deploy:
     name: Deploy on Yandex.Cloud
