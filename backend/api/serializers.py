@@ -215,8 +215,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Ингредиенты не могу повторяться!',
                 )
-            else:
-                ingredients_set.append(ingredient['ingredient']['id'])
+            ingredients_set.append(ingredient['ingredient']['id'])
         return ingredients
 
     def create(self, validated_data):
