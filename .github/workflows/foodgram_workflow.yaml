@@ -69,7 +69,7 @@ jobs:
           sudo docker pull brideshead/foodgram_backend:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
-          rm .rnv
+          rm .env
           touch .env
 
           echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
