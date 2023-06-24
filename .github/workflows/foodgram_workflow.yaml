@@ -65,8 +65,8 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.PASSPHRASE }}
         script: |
-          sudo docker pull brideshead/foodgram_backend:latest
           sudo docker pull brideshead/foodgram_frontend:latest
+          sudo docker pull brideshead/foodgram_backend:latest
           cd "infra"
           sudo docker-compose stop
           sudo docker-compose rm backend
