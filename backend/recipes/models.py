@@ -77,11 +77,11 @@ class Recipe(models.Model):
     text = models.TextField(
         help_text='Текстовое описание рецепта',
     )
-    ingredients = models.ManyToManyField(
-        Ingredient,
-        through='IngredientsInRecipe',
-        verbose_name='Ингредиенты',
-    )
+    # ingredients = models.ManyToManyField(
+    #     Ingredient,
+    #     through='IngredientsInRecipe',
+    #     verbose_name='Ингредиенты',
+    # )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Теги',
@@ -122,22 +122,22 @@ class Recipe(models.Model):
         return f'Автор {self.author}, название рецепта: {self.name}.'
 
 
-class Tagged(models.Model):
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+# class Tagged(models.Model):
+#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+#     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=[
-                    'recipe',
-                    'tag',
-                ],
-                name='unique_tag_per_recipe',
-            )
-        ]
-        verbose_name = 'tag_per_recipe'
-        verbose_name_plural = 'tags_per_recipe'
+#     class Meta:
+#         constraints = [
+#             models.UniqueConstraint(
+#                 fields=[
+#                     'recipe',
+#                     'tag',
+#                 ],
+#                 name='unique_tag_per_recipe',
+#             )
+#         ]
+#         verbose_name = 'tag_per_recipe'
+#         verbose_name_plural = 'tags_per_recipe'
 
 
 class IngredientsInRecipe(models.Model):
@@ -150,7 +150,7 @@ class IngredientsInRecipe(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
-        related_name='ingredients_recipe',
+        related_name='ingredients',
         verbose_name='Связанные ингредиенты',
     )
     amount = models.PositiveSmallIntegerField(

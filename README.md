@@ -1,12 +1,12 @@
-![foodgram-project-react](https://github.com/Brideshead/foodgram-project-react/actions/workflows/foodgram-project-react.yml/badge.svg?branch=master&event=push)
+![foodgram-project-react_workflow](https://github.com/Brideshead/foodgram-project-react/actions/workflows/foodgram-project-react.yml/badge.svg)
 
 
 # Foodgram продуктовый помощник. Дипломный проект студента Яндекс Практикум Богоевич Александра
 
-Проект доступен по адресу:
+Проект доступен по адресу: http://51.250.87.5/
 
 ### Документация Foodgram
-Документация доступна по эндпойнту: 
+Документация доступна по адресу: http://51.250.87.5/api/docs/
 
 ## Описание проекта Foodgram:
 Сайт - продуктовый помощник. На нём пользователи могут публиковать рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Сервис «Список покупок» позволяет пользователям создавать список продуктов, которые нужно купить для приготовления выбранных блюд и скачивать его в формате .txt

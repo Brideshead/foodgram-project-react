@@ -156,7 +156,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe=recipe,
             ).exists():
                 return Response(
-                    {'erros': 'Вы уже добавили рецепт в избранное!'},
+                    {'errors': 'Вы уже добавили рецепт в избранное!'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             favorite = FavoriteRecipes.objects.create(user=user, recipe=recipe)
