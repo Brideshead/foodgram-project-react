@@ -4,8 +4,7 @@ from api.permissions import AdminAuthorOrReadOnly, AdminOrReadOnly
 from api.serializers import (FavoriteShoppingCartSerializer,
                              IngredientSerializer, RecipeAddSerializer,
                              RecipeReadSeriaizer, SubscribeSerializer,
-                             SubscriptionSerializer, TagSerializer,
-                             UserCreateSerializer, UserSerializer)
+                             SubscriptionSerializer, TagSerializer)
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
@@ -21,10 +20,10 @@ class UsersViewSet(UserViewSet):
 
     pagination_class = PageLimitPagination
 
-    def get_serializer_class(self):
-        if self.request.method.lower() == 'post':
-            return UserCreateSerializer
-        return UserSerializer
+    # def get_serializer_class(self):
+    #     if self.request.method.lower() == 'post':
+    #         return UserCreateSerializer
+    #     return UserSerializer
 
     @action(
         detail=False,

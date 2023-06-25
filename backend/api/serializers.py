@@ -1,4 +1,4 @@
-import django.contrib.auth.password_validation as validators
+# import django.contrib.auth.password_validation as validators
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from recipes.models import (FavoriteRecipes, Ingredient, IngredientsInRecipe,
@@ -38,33 +38,33 @@ class UserSerializer(serializers.ModelSerializer):
             user=request.user, subscriber=data.id).exists()
 
 
-class UserCreateSerializer(serializers.ModelSerializer):
-    """Для созданого нового пользователя.
+# class UserCreateSerializer(serializers.ModelSerializer):
+#     """Для созданого нового пользователя.
 
-    def validate_password:
-            Валидация вводимого пароля.
-        Returns:
-            Пароль прошедший валидацию.
-    """
-    class Meta:
-        model = User
-        fields = [
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'password',
-        ]
-        extra_kwargs = {"password": {
-                                        'write_only': True,
-                                        'required': True,
-                                    },
-                        }
+#     def validate_password:
+#             Валидация вводимого пароля.
+#         Returns:
+#             Пароль прошедший валидацию.
+#     """
+#     class Meta:
+#         model = User
+#         fields = [
+#             'email',
+#             'id',
+#             'username',
+#             'first_name',
+#             'last_name',
+#             'password',
+#         ]
+#         extra_kwargs = {"password": {
+#                                         'write_only': True,
+#                                         'required': True,
+#                                     },
+#                         }
 
-    def validate_password(self, password):
-        validators.validate_password(password)
-        return password
+#     def validate_password(self, password):
+#         validators.validate_password(password)
+#         return password
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -312,7 +312,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        ingredients = self.initial_data.get('ingredients_recipe')
+        ingredients = validated_data.pop('ingredients_recipe')
         instance.image = validated_data.get('image', instance.image)
         instance.name = validated_data.get('name', instance.name)
         instance.text = validated_data.get('text', instance.text)
