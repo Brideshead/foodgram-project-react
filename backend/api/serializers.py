@@ -123,19 +123,10 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
         queryset=Ingredient.objects.all(),
         source='ingredient.id',
     )
-    name = serializers.CharField(
-        read_only=True,
-        source='ingredient.name',
-    )
-    measurement_unit = (
-        serializers.CharField(
-            read_only=True,
-            source='ingredient.measurement_unit'),
-    )
 
     class Meta:
         model = IngredientsInRecipe
-        fields = ['id', 'name', 'measurement_unit', 'amount']
+        fields = ['id', 'amount']
 
 
 class IngredientsReadSerializer(serializers.ModelSerializer):
