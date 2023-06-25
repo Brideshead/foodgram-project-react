@@ -118,7 +118,7 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        fields = ['id', 'amount']
+        # fields = ['id', 'amount']
         model = Ingredient
 
 
