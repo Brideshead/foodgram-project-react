@@ -175,7 +175,7 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
     ingredients = IngredientsReadSerializer(
         many=True,
         read_only=True,
-        source='ingredients_recipe',
+        source='recipes',
     )
     image = Base64ImageField(
         max_length=None,
@@ -330,7 +330,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        if 'ingredients' in validated_data:
+        if 'ingredients_recipe' in validated_data:
             ingredients = validated_data.pop('ingredients_recipe')
             instance.ingredients.clear()
             for ingredient in ingredients:
