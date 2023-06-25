@@ -283,7 +283,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         ingredient_list = []
         for items in ingredients:
             ingredient = get_object_or_404(
-                Ingredient, id=items['ingredient']['id'])
+                Ingredient, id=items['ingredient']['id'].id)
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
                     'Ингредиент должен быть уникальным!')
