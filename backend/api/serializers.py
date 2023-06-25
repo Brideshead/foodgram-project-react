@@ -128,7 +128,7 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     measurement_unit = (
         serializers.CharField(
             read_only=True,
-            source='ingredients_recipe.measurement_unit'))
+            source='ingredient.measurement_unit'))
 
     class Meta:
         model = IngredientsInRecipe
@@ -175,7 +175,7 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
     ingredients = IngredientsReadSerializer(
         many=True,
         read_only=True,
-        source='ingredients_recipe',
+        source='recipes',
     )
     image = Base64ImageField(
         max_length=None,
@@ -371,24 +371,29 @@ class RecipeAddSerializer(serializers.ModelSerializer):
     #             recipe=recipe,
     #         )
     def to_representation(self, instance):
-        get_object_or_404(User, id=instance.author.id)
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            favorite = False
-            shopping_cart = False
-        else:
-            favorite = FavoriteRecipes.objects.filter(
-                user=user,
-                recipe=instance.id,
-            ).exists()
-            shopping_cart = ShoppingCart.objects.filter(
-                user=user,
-                recipe=instance.id,
-            ).exists()
-        representation = super().to_representation(instance)
-        representation['is_favorited'] = favorite
-        representation['is_in_shopping_cart'] = shopping_cart
-        return representation
+        return RecipeReadSeriaizer(
+            instance,
+            context={
+                'request': self.context.get('request')
+            }).data
+        # get_object_or_404(User, id=instance.author.id)
+        # user = self.context.get('request').user
+        # if user.is_anonymous:
+        #     favorite = False
+        #     shopping_cart = False
+        # else:
+        #     favorite = FavoriteRecipes.objects.filter(
+        #         user=user,
+        #         recipe=instance.id,
+        #     ).exists()
+        #     shopping_cart = ShoppingCart.objects.filter(
+        #         user=user,
+        #         recipe=instance.id,
+        #     ).exists()
+        # representation = super().to_representation(instance)
+        # representation['is_favorited'] = favorite
+        # representation['is_in_shopping_cart'] = shopping_cart
+        # return representation
 
 
 class SubscribeSerializer(serializers.ModelSerializer):
