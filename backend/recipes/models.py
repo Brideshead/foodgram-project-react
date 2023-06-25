@@ -77,11 +77,11 @@ class Recipe(models.Model):
     text = models.TextField(
         help_text='Текстовое описание рецепта',
     )
-    # ingredients = models.ManyToManyField(
-    #     Ingredient,
-    #     through='IngredientsInRecipe',
-    #     verbose_name='Ингредиенты',
-    # )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='IngredientsInRecipe',
+        verbose_name='Ингредиенты',
+    )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Теги',
