@@ -124,15 +124,15 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
         source='ingredient.id',
     )
 
-    name = serializers.CharField(read_only=True, source='ingredient.name')
-    measurement_unit = (
-        serializers.CharField(
-            read_only=True,
-            source='ingredient.measurement_unit'))
+    # name = serializers.CharField(read_only=True, source='ingredient.name')
+    # measurement_unit = (
+    #     serializers.CharField(
+    #         read_only=True,
+    #         source='ingredient.measurement_unit'))
 
     class Meta:
         model = IngredientsInRecipe
-        fields = ['id', 'name', 'measurement_unit', 'amount']
+        fields = ['id', 'amount']
 
 
 class IngredientsReadSerializer(serializers.ModelSerializer):
@@ -175,7 +175,7 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
     ingredients = IngredientsReadSerializer(
         many=True,
         read_only=True,
-        source='recipes',
+        source='ingredients_recipe',
     )
     image = Base64ImageField(
         max_length=None,
@@ -330,7 +330,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, instance, validated_data):
-        if 'ingredients_recipe' in validated_data:
+        if 'ingredients' in validated_data:
             ingredients = validated_data.pop('ingredients_recipe')
             instance.ingredients.clear()
             for ingredient in ingredients:
