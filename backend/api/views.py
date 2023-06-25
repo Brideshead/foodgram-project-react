@@ -1,9 +1,9 @@
 from api.filters import IngredientsFilter, RecipesFilter
 from api.pagination import PageLimitPagination
 from api.permissions import AdminAuthorOrReadOnly, AdminOrReadOnly
-from api.serializers import (FavoriteGetSerializer, IngredientSerializer,
+from api.serializers import (FavoriteShoppingCartSerializer,
                              RecipeAddSerializer, RecipeReadSeriaizer,
-                             ShoppingCartSerializer, SubscribeSerializer,
+                             SubscribeSerializer, IngredientSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserCreateSerializer, UserSerializer)
 from django.http import HttpResponse
@@ -156,11 +156,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 recipe=recipe,
             ).exists():
                 return Response(
-                    f'Вы уже добавили рецепт {recipe} в избранное!',
+                    {'erros': 'Вы уже добавили рецепт в избранное!'},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             favorite = FavoriteRecipes.objects.create(user=user, recipe=recipe)
-            serializer = FavoriteGetSerializer(favorite)
+            serializer = FavoriteShoppingCartSerializer(favorite)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         if request.method == 'DELETE':
             favorite = get_object_or_404(
@@ -168,7 +168,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
             favorite.delete()
             return Response(
-                f'Вы удалили рецепт {recipe} из избранного!',
+                {'message': 'Вы удалили рецепт из избранного!'},
                 status=status.HTTP_204_NO_CONTENT,
             )
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -181,31 +181,38 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, pk):
-        recipe = get_object_or_404(Recipe, id=pk)
-        data = {'user': request.user.id, 'recipe': pk}
         if request.method == 'POST':
-            serializer = ShoppingCartSerializer(
-                data=data, context={'request': request})
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            serializer = FavoriteGetSerializer(recipe)
+            user = request.user
+            recipe = self.get_object()
+            if ShoppingCart.objects.filter(
+                user=user,
+                recipe=recipe,
+            ).exists():
+                return Response(
+                    {'errors': 'Вы уже добавили рецепт в корзину!'},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            shopping_recipe = ShoppingCart.objects.create(
+                user=user,
+                recipe=recipe,
+            )
+            serializer = FavoriteShoppingCartSerializer(shopping_recipe)
             return Response(
-                f'Вы добавили {recipe} в список покупок!',
                 serializer.data,
                 status=status.HTTP_201_CREATED,
             )
-        serializer = ShoppingCartSerializer(
-            data=data,
-            context={'request': request},
-        )
-        serializer.is_valid(raise_exception=True)
-        ShoppingCart.objects.filter(
-            user=serializer.data.get('user'),
-            recipe=serializer.data.get('recipe')).delete()
-        return Response(
-            {'message': f'Вы удалили {recipe} из списка покупок!'},
-            status=status.HTTP_204_NO_CONTENT,
-        )
+        if request.method == 'DELETE':
+            shopping_recipe = get_object_or_404(
+                ShoppingCart,
+                user=request.user,
+                recipe_id=pk,
+            )
+            shopping_recipe.delete()
+            return Response(
+                {'message': 'Вы удалили рецепт из списка покупок!'},
+                status=status.HTTP_204_NO_CONTENT,
+            )
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=['GET'],

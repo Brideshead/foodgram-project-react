@@ -74,6 +74,12 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'color', 'slug']
 
 
+class TaggedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tagged
+        fields = ['id', 'recipe', 'tag']
+
+
 class IngredientSerializer(serializers.ModelSerializer):
     """Базовый сериализатор ингредиентов."""
     class Meta:
@@ -103,12 +109,17 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     """Сериализация ингредиентов при создании рецепта."""
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
-        source='ingredient.id')
-    name = serializers.CharField(read_only=True, source='ingredient.name')
+        source='ingredient.id',
+    )
+    name = serializers.CharField(
+        read_only=True,
+        source='ingredient.name',
+    )
     measurement_unit = (
         serializers.CharField(
             read_only=True,
-            source='ingredient.measurement_unit'))
+            source='ingredient.measurement_unit'),
+    )
 
     class Meta:
         model = IngredientsInRecipe
@@ -137,7 +148,10 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
         read_only=True,
         source='ingredients_recipe',
     )
-    image = Base64ImageField()
+    image = Base64ImageField(
+        max_length=None,
+        use_url=True,
+    )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -192,12 +206,15 @@ class RecipeAddSerializer(serializers.ModelSerializer):
             Если ингредиенты проходят валидацию,
             возвращает список ингредиентов.
     """
+
     tags = serializers.PrimaryKeyRelatedField(
         many=True,
         queryset=Tag.objects.all(),
     )
     ingredients = IngredientsAddSerializer(
-        many=True, source='ingredients_recipe')
+        many=True,
+        source='ingredients_recipe',
+    )
     image = Base64ImageField(
         max_length=None,
         use_url=True,
@@ -362,25 +379,12 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         return instance.subscriber.recipes.all().count()
 
 
-class FavoriteGetSerializer(serializers.ModelSerializer):
+class FavoriteShoppingCartSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(source='recipe.id')
+    name = serializers.CharField(source='recipe.name')
+    image = Base64ImageField(source='recipe.image')
+    cooking_time = serializers.IntegerField(source='recipe.cooking_time')
+
     class Meta:
-        model = Recipe
+        model = FavoriteRecipes
         fields = ['id', 'name', 'image', 'cooking_time']
-        read_only_fields = ['id', 'name', 'image', 'cooking_time']
-
-
-class ShoppingCartSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ShoppingCart
-        fields = ['user', 'recipe']
-
-    def validate(self, data):
-        user = data.get('user')
-        recipe = data.get('recipe')
-
-        if self.context.get('request').method == 'POST':
-            if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
-                raise serializers.ValidationError(
-                    'Вы уде добавили этот рецепт в список покупок!',
-                )
-        return data
