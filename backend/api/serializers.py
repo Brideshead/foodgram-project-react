@@ -115,11 +115,10 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     """Сериализация ингредиентов при создании рецепта."""
 
     id = serializers.IntegerField()
-    amount = serializers.IntegerField()
 
     class Meta:
-        # fields = ['id', 'amount']
         model = Ingredient
+        fields = ['id', 'amount']
 
 
 class IngredientsReadSerializer(serializers.ModelSerializer):
