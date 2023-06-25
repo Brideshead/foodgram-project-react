@@ -99,8 +99,7 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = IngredientsInRecipe
-        fields = ['id', 'name', 'measurement_unit', 'amount']
-        read_only_fields = ['id', 'name', 'measurement_unit', 'amount']
+        fields = ['id', 'name', 'amount', 'measurement_unit']
 
 
 class IngredientsAddSerializer(serializers.ModelSerializer):
@@ -112,13 +111,12 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     )
     name = serializers.CharField(read_only=True, source='ingredient.name')
     measurement_unit = serializers.CharField(
-            read_only=True,
-            source='ingredient.measurement_unit',
+        source='ingredient.measurement_unit',
     )
 
     class Meta:
         model = IngredientsInRecipe
-        fields = ['id', 'name', 'measurement_unit', 'amount']
+        fields = ['id', 'name', 'amount', 'measurement_unit']
 
 
 class IngredientsReadSerializer(serializers.ModelSerializer):
@@ -130,15 +128,13 @@ class IngredientsReadSerializer(serializers.ModelSerializer):
         read_only=True,
         source='ingredient.name',
     )
-    measurement_unit = (
-        serializers.CharField(
-            read_only=True,
-            source='ingredient.measurement_unit'),
+    measurement_unit = serializers.CharField(
+            source='ingredient.measurement_unit',
     )
 
     class Meta:
         model = IngredientsInRecipe
-        fields = ['id', 'name', 'measurement_unit', 'amount']
+        fields = ['id', 'name', 'amount', 'measurement_unit']
 
 
 class RecipeReadSeriaizer(serializers.ModelSerializer):
