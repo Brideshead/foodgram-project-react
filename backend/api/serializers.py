@@ -323,9 +323,9 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         recipe.tags.set(tags)
         for ingredient in ingredients:
             IngredientsInRecipe.objects.create(
-                ingredient=ingredient.get('id'),
-                amount=ingredient.get('amount'),
                 recipe=recipe,
+                ingredient_id=ingredient.get('id'),
+                amount=ingredient.get('amount'),
             )
         recipe.save()
         return recipe
@@ -344,9 +344,9 @@ class RecipeAddSerializer(serializers.ModelSerializer):
             instance.ingredients.clear()
             for ingredient in ingredients:
                 IngredientsInRecipe.objects.create(
-                    ingredient=ingredient.get('id'),
-                    amount=ingredient.get('amount'),
                     recipe=instance,
+                    ingredient_id=ingredient.get('id'),
+                    amount=ingredient.get('amount'),
                 )
         if 'tags' in validated_data:
             instance.tags.set(
