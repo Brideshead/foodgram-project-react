@@ -118,8 +118,8 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = IngredientsInRecipe
         fields = ['id', 'amount']
+        model = Ingredient
 
 
 class IngredientsReadSerializer(serializers.ModelSerializer):
@@ -230,7 +230,6 @@ class RecipeAddSerializer(serializers.ModelSerializer):
     )
     ingredients = IngredientsAddSerializer(
         many=True,
-        source='ingredients_recipe',
     )
     image = Base64ImageField(
         max_length=None,
