@@ -118,7 +118,7 @@ class IngredientsAddSerializer(serializers.ModelSerializer):
     amount = serializers.IntegerField()
 
     class Meta:
-        model = Ingredient
+        model = IngredientsInRecipe
         fields = ['id', 'amount']
 
 
@@ -228,7 +228,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         many=True,
         queryset=Tag.objects.all(),
     )
-    ingredients = IngredientRecipeSerializer(
+    ingredients = IngredientsAddSerializer(
         many=True,
         source='ingredients_recipe',
     )
