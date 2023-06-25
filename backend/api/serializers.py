@@ -161,7 +161,6 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     ingredients = IngredientsReadSerializer(
         many=True,
-        read_only=True,
     )
     image = Base64ImageField(
         max_length=None,
@@ -229,7 +228,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         many=True,
         queryset=Tag.objects.all(),
     )
-    ingredients = IngredientsAddSerializer(
+    ingredients = IngredientRecipeSerializer(
         many=True,
     )
     image = Base64ImageField(
