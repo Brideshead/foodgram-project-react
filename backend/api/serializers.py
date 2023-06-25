@@ -74,12 +74,6 @@ class TagSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'color', 'slug']
 
 
-# class TaggedSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Tagged
-#         fields = ['id', 'recipe', 'tag']
-
-
 class IngredientSerializer(serializers.ModelSerializer):
     """Базовый сериализатор ингредиентов."""
     class Meta:
@@ -98,11 +92,9 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
         read_only=True,
         source='ingredient.name',
     )
-    measurement_unit = (
-        serializers.CharField(
+    measurement_unit = serializers.CharField(
             read_only=True,
             source='ingredient.measurement_unit',
-        ),
     )
 
     class Meta:
@@ -114,25 +106,19 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
 class IngredientsAddSerializer(serializers.ModelSerializer):
     """Сериализация ингредиентов при создании рецепта."""
 
-    # id = serializers.IntegerField()
-
-    # class Meta:
-    #     model = Ingredient
-    #     fields = ['id', 'amount']
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
         source='ingredient.id',
     )
-
-    # name = serializers.CharField(read_only=True, source='ingredient.name')
-    # measurement_unit = (
-    #     serializers.CharField(
-    #         read_only=True,
-    #         source='ingredient.measurement_unit'))
+    name = serializers.CharField(read_only=True, source='ingredient.name')
+    measurement_unit = serializers.CharField(
+            read_only=True,
+            source='ingredient.measurement_unit',
+    )
 
     class Meta:
         model = IngredientsInRecipe
-        fields = ['id', 'amount']
+        fields = ['id', 'name', 'measurement_unit', 'amount']
 
 
 class IngredientsReadSerializer(serializers.ModelSerializer):
