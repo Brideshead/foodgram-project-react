@@ -398,7 +398,7 @@ class SubscriptionSerializer(UserSerializer):
     #     user = data.user
     #     if user.is_anonymous:
     #         return False
-    #     return Subscribe.objects.filter(user=user, 
+    #     return Subscribe.objects.filter(user=user,
     # subscriber=data.id).exists()
 
     # def get_recipes(self, instance):
