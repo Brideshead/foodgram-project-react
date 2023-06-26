@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from recipes.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingCart,
+                            IngredientsInRecipe,
                             Subscribe, Tag, User)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -98,15 +99,39 @@ class UsersViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def subscriptions(self, request):
-        user = request.user
-        queryset = Subscribe.objects.filter(user=user)
-        pages = self.paginate_queryset(queryset)
-        serializer = SubscriptionSerializer(
-            pages,
-            many=True,
-            context={'request': request},
+        subscribers = User.objects.filter(
+            id__in=request.user.subscribe.all().values('author_id'),
         )
-        return self.get_paginated_response(serializer.data)
+
+        page = self.paginate_queryset(subscribers)
+        if page is not None:
+            serializer = SubscriptionSerializer(
+                page, 
+                many=True,
+                context=
+                {
+                    'request': request,
+                },
+            )
+            return self.get_paginated_response(serializer.data)
+        serializer = SubscriptionSerializer(
+            subscribers,
+            many=True, 
+            context=
+            {
+                'request': request,
+            },
+        )
+        return Response(serializer.data)
+        # user = request.user
+        # queryset = Subscribe.objects.filter(user=user)
+        # pages = self.paginate_queryset(queryset)
+        # serializer = SubscriptionSerializer(
+        #     pages,
+        #     many=True,
+        #     context={'request': request},
+        # )
+        # return self.get_paginated_response(serializer.data)
 
     def perform_create(self, serializer):
         instance = serializer.save()
@@ -261,11 +286,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # buying_list = {}
         # user = request.user
         shopping_cart = (
-            request.user.shopping_cart.recipes.
-            values(
+            IngredientsInRecipe.objects.filter(
+                recipe__shopping_cart__user=request.user
+            ).values(
                 'ingredients__name',
-                'ingredients__measurement_unit'
-            ).annotate(amount=Sum('recipe__amount')).order_by())
+                'ingredients__measurement_unit',
+            ).order_by(
+                'ingredients__name',
+            ).annotate(ingredient_value=Sum('amount'))
+        )
         # ingredients = IngredientsInRecipe.objects.filter(
         #     recipe__shopping_cart__user=user,
         # )
