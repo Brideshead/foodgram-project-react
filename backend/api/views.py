@@ -12,9 +12,8 @@ from django.db.models.aggregates import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipes, IngredientsInRecipe,
-                            Ingredient, Recipe, ShoppingCart,
-                            Subscribe, Tag, User)
+from recipes.models import (FavoriteRecipes, Ingredient, IngredientsInRecipe,
+                            Recipe, ShoppingCart, Subscribe, Tag, User)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -340,7 +339,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 [
                     f'Ингредиент: {ingredient["ingredients__name"]}'
                     f'Количество: {ingredient["amount"]}'
-                    f'Ед. изм-я: {ingredient["ingredients__measurement_unit"]}',
+                    f'Ед.изм-я: {ingredient["ingredients__measurement_unit"]}',
                 ],
             )
         return response
