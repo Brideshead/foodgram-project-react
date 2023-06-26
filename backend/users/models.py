@@ -39,5 +39,8 @@ class User(AbstractUser):
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
+    def get_recipes_count(self):
+        return self.recipes.all().count()
+
     def __str__(self):
         return f'Пользователь {self.username}: язик {self.email}'

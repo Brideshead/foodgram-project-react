@@ -293,7 +293,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 'ingredients__name',
                 'ingredients__measurement_unit',
             ).annotate(
-                ingredient_value=Sum('ingredients_amount'),
+                ingredient_value=Sum('ingredients_recipe_amount'),
             ),
         )
         # ingredients = IngredientsInRecipe.objects.filter(
@@ -333,7 +333,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             writer.writerow(
                 [
                     f'Ингредиент: {recipe["ingredients__name"]}'
-                    f'Количество: {recipe["ingredients_amount"]}'
+                    f'Количество: {recipe["amount"]}'
                     f'Ед. изм-я: {recipe["ingredients__measurement_unit"]}',
                 ],
             )
