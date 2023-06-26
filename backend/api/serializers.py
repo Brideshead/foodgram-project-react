@@ -366,24 +366,28 @@ class SubscriptionSerializer(UserSerializer):
     def get_recipes_count:
         Получение количества рецептов.
     """
-    email = serializers.ReadOnlyField(source='subscriber.email')
-    id = serializers.ReadOnlyField(source='subscriber.id')
-    username = serializers.ReadOnlyField(source='subscriber.username')
-    first_name = serializers.ReadOnlyField(source='subscriber.first_name')
-    last_name = serializers.ReadOnlyField(source='subscriber.last_name')
-    is_subscribed = serializers.BooleanField(read_only=True)
+    # email = serializers.ReadOnlyField(source='subscriber.email')
+    # # id = serializers.ReadOnlyField(source='subscriber.id')
+    # username = serializers.ReadOnlyField(source='subscriber.username')
+    # first_name = serializers.ReadOnlyField(source='subscriber.first_name')
+    # last_name = serializers.ReadOnlyField(source='subscriber.last_name')
+    # is_subscribed = serializers.BooleanField(read_only=True)
     # recipes = serializers.SerializerMethodField()
+    email = serializers.StringRelatedField()
+    username = serializers.StringRelatedField()
+    first_name = serializers.StringRelatedField()
+    last_name = serializers.StringRelatedField()
     recipes = SubscribeRecipeSerializer(
         read_only=True,
         many=True,
     )
-    recipes_count = serializers.IntegerField(read_only=True)
+    # recipes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
         fields = (
-            'email',
             'id',
+            'email',
             'username',
             'first_name',
             'last_name',

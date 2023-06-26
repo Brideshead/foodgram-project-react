@@ -101,7 +101,7 @@ class UsersViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         subscribers = User.objects.filter(
-            id__in=request.user.subscribe.all().values('subscriber_id'),
+            id__in=request.user.subscribe.all().values('author_id'),
         )
 
         page = self.paginate_queryset(subscribers)
@@ -332,8 +332,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         for recipe in recipes:
             writer.writerow(
                 [
-                    f'{recipe["ingredients__name"]} - {recipe["amount"]}'
-                    f'{recipe["ingredients__measurement_unit"]}',
+                    f'Ингредиент: {recipe["ingredients__name"]}'
+                    f'Количество: {recipe["ingredients_amount"]}'
+                    f'Ед. изм-я: {recipe["ingredients__measurement_unit"]}',
                 ],
             )
         return response
