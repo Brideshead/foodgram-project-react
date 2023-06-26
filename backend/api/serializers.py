@@ -374,6 +374,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
     # recipes = serializers.SerializerMethodField()
     recipes = SubscribeRecipeSerializer(
+        queryset=Recipe.objects.all(),
         many=True,
     )
     recipes_count = serializers.SerializerMethodField()

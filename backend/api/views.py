@@ -14,6 +14,8 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from core.utils import shopcart_or_favorite
+from django.db.models.aggregates import Sum
 
 
 class UsersViewSet(UserViewSet):
@@ -167,30 +169,38 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def favorite(self, request, pk):
-        if request.method == 'POST':
-            user = request.user
-            recipe = self.get_object()
-            if FavoriteRecipes.objects.filter(
-                user=user,
-                recipe=recipe,
-            ).exists():
-                return Response(
-                    {'errors': 'Вы уже добавили рецепт в избранное!'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            favorite = FavoriteRecipes.objects.create(user=user, recipe=recipe)
-            serializer = FavoriteShoppingCartSerializer(favorite)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            favorite = get_object_or_404(
-                FavoriteRecipes, user=request.user, recipe__id=pk
-            )
-            favorite.delete()
-            return Response(
-                {'message': 'Вы удалили рецепт из избранного!'},
-                status=status.HTTP_204_NO_CONTENT,
-            )
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return shopcart_or_favorite(
+            self,
+            request,
+            FavoriteRecipes,
+            FavoriteShoppingCartSerializer,
+            pk,
+        )
+        # if request.method == 'POST':
+        #     user = request.user
+        #     recipe = self.get_object()
+        #     if FavoriteRecipes.objects.filter(
+        #         user=user,
+        #         recipe=recipe,
+        #     ).exists():
+        #         return Response(
+        #             {'errors': 'Вы уже добавили рецепт в избранное!'},
+        #             status=status.HTTP_400_BAD_REQUEST,
+        #         )
+        #     favorite = FavoriteRecipes.objects.create(user=user, 
+        # recipe=recipe)
+        #     serializer = FavoriteShoppingCartSerializer(favorite)
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # if request.method == 'DELETE':
+        #     favorite = get_object_or_404(
+        #         FavoriteRecipes, user=request.user, recipe__id=pk
+        #     )
+        #     favorite.delete()
+        #     return Response(
+        #         {'message': 'Вы удалили рецепт из избранного!'},
+        #         status=status.HTTP_204_NO_CONTENT,
+        #     )
+        # return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=True,
@@ -200,38 +210,45 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, pk):
-        if request.method == 'POST':
-            user = request.user
-            recipe = self.get_object()
-            if ShoppingCart.objects.filter(
-                user=user,
-                recipe=recipe,
-            ).exists():
-                return Response(
-                    {'errors': 'Вы уже добавили рецепт в корзину!'},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            shopping_recipe = ShoppingCart.objects.create(
-                user=user,
-                recipe=recipe,
-            )
-            serializer = FavoriteShoppingCartSerializer(shopping_recipe)
-            return Response(
-                serializer.data,
-                status=status.HTTP_201_CREATED,
-            )
-        if request.method == 'DELETE':
-            shopping_recipe = get_object_or_404(
-                ShoppingCart,
-                user=request.user,
-                recipe_id=pk,
-            )
-            shopping_recipe.delete()
-            return Response(
-                {'message': 'Вы удалили рецепт из списка покупок!'},
-                status=status.HTTP_204_NO_CONTENT,
-            )
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return shopcart_or_favorite(
+            self,
+            request,
+            ShoppingCart,
+            FavoriteShoppingCartSerializer,
+            pk,
+        )
+        # if request.method == 'POST':
+        #     user = request.user
+        #     recipe = self.get_object()
+        #     if ShoppingCart.objects.filter(
+        #         user=user,
+        #         recipe=recipe,
+        #     ).exists():
+        #         return Response(
+        #             {'errors': 'Вы уже добавили рецепт в корзину!'},
+        #             status=status.HTTP_400_BAD_REQUEST,
+        #         )
+        #     shopping_recipe = ShoppingCart.objects.create(
+        #         user=user,
+        #         recipe=recipe,
+        #     )
+        #     serializer = FavoriteShoppingCartSerializer(shopping_recipe)
+        #     return Response(
+        #         serializer.data,
+        #         status=status.HTTP_201_CREATED,
+        #     )
+        # if request.method == 'DELETE':
+        #     shopping_recipe = get_object_or_404(
+        #         ShoppingCart,
+        #         user=request.user,
+        #         recipe_id=pk,
+        #     )
+        #     shopping_recipe.delete()
+        #     return Response(
+        #         {'message': 'Вы удалили рецепт из списка покупок!'},
+        #         status=status.HTTP_204_NO_CONTENT,
+        #     )
+        # return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=['GET'],
@@ -241,29 +258,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def download_shopping_cart(self, request):
-        buying_list = {}
-        user = request.user
-        ingredients = IngredientsInRecipe.objects.filter(
-            recipe__shopping_cart__user=user,
-        )
-        for ingredient in ingredients:
-            amount = ingredient.amount
-            name = ingredient.ingredient.name
-            measurement_unit = ingredient.ingredient.measurement_unit
-            if name not in buying_list:
-                buying_list[name] = {
-                    'amount': amount,
-                    'measurement_unit': measurement_unit,
-                }
-            else:
-                buying_list[name]['amount'] = (
-                    buying_list[name]['amount'] + amount,
-                )
+        # buying_list = {}
+        # user = request.user
+        shopping_cart = (
+            request.user.shopping_cart.recipe.
+            values(
+                'ingredients__name',
+                'ingredients__measurement_unit'
+            ).annotate(amount=Sum('recipe__amount')).order_by())
+        # ingredients = IngredientsInRecipe.objects.filter(
+        #     recipe__shopping_cart__user=user,
+        # )
+        # for ingredient in ingredients:
+        #     amount = ingredient.amount
+        #     name = ingredient.ingredient.name
+        #     measurement_unit = ingredient.ingredient.measurement_unit
+        #     if name not in buying_list:
+        #         buying_list[name] = {
+        #             'amount': amount,
+        #             'measurement_unit': measurement_unit,
+        #         }
+        #     else:
+        #         buying_list[name]['amount'] = (
+        #             buying_list[name]['amount'] + amount,
+        #         )
         shopping_list = []
-        for item in buying_list:
+        for item, recipe in shopping_cart:
             shopping_list.append(
-                f'{item} - {buying_list[item]["amount"]}, '
-                f'{buying_list[item]["measurement_unit"]}\n',
+                f'{item} - {recipe["amount"]}, '
+                f'{recipe["ingredients_measurement_unit"]}\n',
             )
         shopping_list_text = ''.join(shopping_list)
         response = HttpResponse(content_type='text/plain')
