@@ -1,3 +1,7 @@
+# VSCode
+.vscode
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -40,6 +44,8 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+.vscode
+.vscode/
 htmlcov/
 .tox/
 .nox/
