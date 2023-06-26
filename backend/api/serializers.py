@@ -371,13 +371,13 @@ class SubscriptionSerializer(UserSerializer):
     username = serializers.ReadOnlyField(source='subscriber.username')
     first_name = serializers.ReadOnlyField(source='subscriber.first_name')
     last_name = serializers.ReadOnlyField(source='subscriber.last_name')
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.BooleanField(read_only=True)
     # recipes = serializers.SerializerMethodField()
     recipes = SubscribeRecipeSerializer(
         read_only=True,
         many=True,
     )
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = User
@@ -406,8 +406,8 @@ class SubscriptionSerializer(UserSerializer):
     #     serializer = SubscribeRecipeSerializer(recipes, many=True)
     #     return serializer.data
 
-    def get_recipes_count(self, instance):
-        return instance.subscriber.recipes.all().count()
+    # def get_recipes_count(self, instance):
+    #     return instance.subscriber.recipes.all().count()
 
 
 class FavoriteShoppingCartSerializer(serializers.ModelSerializer):

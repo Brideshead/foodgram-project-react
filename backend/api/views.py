@@ -288,10 +288,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             Recipe.objects.filter(
                 shopping_cart__user=request.user,
             ).order_by(
-                'ingredient__name',
+                'ingredients__name',
             ).values(
-                'ingredient__name',
-                'ingredient__measurement_unit',
+                'ingredients__name',
+                'ingredients__measurement_unit',
             ).annotate(
                 ingredient_value=Sum('amount'),
             ),
@@ -332,8 +332,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         for recipe in recipes:
             writer.writerow(
                 [
-                    f'{recipe["ingredient__name"]} - {recipe["amount"]}'
-                    f'{recipe["ingredient__dimension"]}',
+                    f'{recipe["ingredients__name"]} - {recipe["amount"]}'
+                    f'{recipe["ingredients__measurement_unit"]}',
                 ],
             )
         return response
