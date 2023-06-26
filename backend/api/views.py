@@ -8,7 +8,7 @@ from api.serializers import (FavoriteShoppingCartSerializer,
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipes, Ingredient, IngredientsInRecipe,
+from recipes.models import (FavoriteRecipes, Ingredient,
                             Recipe, ShoppingCart, Subscribe, Tag, User)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -187,7 +187,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #             {'errors': 'Вы уже добавили рецепт в избранное!'},
         #             status=status.HTTP_400_BAD_REQUEST,
         #         )
-        #     favorite = FavoriteRecipes.objects.create(user=user, 
+        #     favorite = FavoriteRecipes.objects.create(user=user,
         # recipe=recipe)
         #     serializer = FavoriteShoppingCartSerializer(favorite)
         #     return Response(serializer.data, status=status.HTTP_201_CREATED)
