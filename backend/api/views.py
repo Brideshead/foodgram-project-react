@@ -1,3 +1,4 @@
+import csv
 from api.filters import IngredientsFilter, RecipesFilter
 from api.pagination import PageLimitPagination
 from api.permissions import AdminAuthorOrReadOnly, AdminOrReadOnly
@@ -282,15 +283,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         # buying_list = {}
         # user = request.user
-        shopping_cart = (
-            IngredientsInRecipe.objects.filter(
-                recipe__shopping_cart__user=request.user
+        recipes = (
+            Recipe.objects.filter(
+                shopping_cart__user=request.user,
+            ).order_by(
+                'ingredient__name',
             ).values(
                 'ingredient__name',
                 'ingredient__measurement_unit',
-            ).order_by(
-                'ingredient__name',
-            ).annotate(ingredient_value=Sum('amount'))
+            ).annotate(
+                ingredient_value=Sum('amount'),
+            ),
         )
         # ingredients = IngredientsInRecipe.objects.filter(
         #     recipe__shopping_cart__user=user,
@@ -308,16 +311,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #         buying_list[name]['amount'] = (
         #             buying_list[name]['amount'] + amount,
         #         )
-        shopping_list = []
-        for item, recipe in shopping_cart:
-            shopping_list.append(
-                f'{item} - {recipe["amount"]}, '
-                f'{recipe["ingredients_measurement_unit"]}\n',
-            )
-        shopping_list_text = ''.join(shopping_list)
-        response = HttpResponse(content_type='text/plain')
+        # shopping_list = []
+        # for item, recipe in shopping_cart:
+        #     shopping_list.append(
+        #         f'{item} - {recipe["amount"]}, '
+        #         f'{recipe["ingredients_measurement_unit"]}\n',
+        #     )
+        # shopping_list_text = ''.join(shopping_list)
+        # response = HttpResponse(content_type='text/plain')
+        # response[
+        #     'Content-Disposition'
+        # ] = 'attachment; filename="shopping_list.txt"'
+        # response.write(shopping_list_text)
+        response = HttpResponse(content_type='txt/csv')
         response[
             'Content-Disposition'
         ] = 'attachment; filename="shopping_list.txt"'
-        response.write(shopping_list_text)
+        writer = csv.writer(response)
+        for recipe in recipes:
+            writer.writerow(
+                [
+                    f'{recipe["ingredient__name"]} - {recipe["amount"]}'
+                    f'{recipe["ingredient__dimension"]}',
+                ],
+            )
         return response

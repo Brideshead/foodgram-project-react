@@ -394,11 +394,11 @@ class SubscriptionSerializer(UserSerializer):
         read_only_fields = '__all__',
         ordering = ('id',)
 
-    def get_is_subscribed(self, data):
-        user = data.user
-        if user.is_anonymous:
-            return False
-        return Subscribe.objects.filter(user=user, subscriber=data.id).exists()
+    # def get_is_subscribed(self, data):
+    #     user = data.user
+    #     if user.is_anonymous:
+    #         return False
+    #     return Subscribe.objects.filter(user=user, subscriber=data.id).exists()
 
     # def get_recipes(self, instance):
     #     recipes = instance.subscriber.recipes.all()
