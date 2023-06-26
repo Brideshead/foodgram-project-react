@@ -244,19 +244,19 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         ).exists()
 
     def validate(self, data):
-        ingredients = data.get('ingredients_recipe')
+        ingredients = data['ingredients_recipe']
         ingredient_list = []
         for items in ingredients:
             ingredient = get_object_or_404(
                 Ingredient,
-                id=items.get('ingredient').get('id').id,
+                id=items['ingredient']['id'].id,
             )
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
                     'Ингредиент должен быть уникальным!',
                 )
             ingredient_list.append(ingredient)
-        tags = data.get('tags')
+        tags = data['tags']
         if not tags:
             raise serializers.ValidationError(
                 'Нужен хотя бы один тэг для рецепта!',
@@ -286,7 +286,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             IngredientsInRecipe.objects.create(
                 recipe=recipe,
-                id=ingredient.get('ingredient').get('id').id,
+                ingredient_id=ingredient['ingredient']['id'].id,
                 amount=ingredient.get('amount'),
             )
         recipe.save()
@@ -307,7 +307,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             IngredientsInRecipe.objects.create(
                 recipe=instance,
-                id=ingredient.get('ingredient').get('id').id,
+                ingredient_id=ingredient['ingredient']['id'].id,
                 amount=ingredient.get('amount'),
             )
         instance.save()
