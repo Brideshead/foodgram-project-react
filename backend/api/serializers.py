@@ -21,12 +21,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-                'email',
-                'id',
-                'username',
-                'first_name',
-                'last_name',
-                'is_subscribed',
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
         ]
         ordering = ('id',)
 
@@ -56,11 +56,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'last_name',
             'password',
         )
-        extra_kwargs = {"password": {
-                                        'write_only': True,
-                                        'required': True,
-                                    },
-                        }
+        extra_kwargs = {
+            "password": {
+                'write_only': True,
+                'required': True,
+            },
+        }
 
     def validate_password(self, password):
         validators.validate_password(password)
@@ -105,7 +106,7 @@ class IngredientsReadSerializer(serializers.ModelSerializer):
         source='ingredient.name',
     )
     measurement_unit = serializers.CharField(
-            source='ingredient.measurement_unit',
+        source='ingredient.measurement_unit',
     )
 
     class Meta:
@@ -155,8 +156,8 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return FavoriteRecipes.objects.filter(
-                user=user,
-                recipe_id=instance.id,
+            user=user,
+            recipe_id=instance.id,
         ).exists()
 
     def get_is_in_shopping_cart(self, instance):
@@ -164,8 +165,8 @@ class RecipeReadSeriaizer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return ShoppingCart.objects.filter(
-                user=user,
-                recipe_id=instance.id,
+            user=user,
+            recipe_id=instance.id,
         ).exists()
 
 
@@ -230,8 +231,8 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return FavoriteRecipes.objects.filter(
-                user=user,
-                recipe_id=instance.id,
+            user=user,
+            recipe_id=instance.id,
         ).exists()
 
     def get_is_in_shopping_cart(self, instance):
@@ -239,8 +240,8 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return ShoppingCart.objects.filter(
-                user=user,
-                recipe_id=instance.id,
+            user=user,
+            recipe_id=instance.id,
         ).exists()
 
     def validate(self, data):

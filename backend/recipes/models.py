@@ -88,12 +88,12 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         validators=[
-                validators.MinValueValidator(
-                    1,
-                    message='Минимальное время приготовления = 1 минута',
-                ),
+            validators.MinValueValidator(
+            1,
+            message="Минимальное время приготовления = 1 минута",
+            ),
         ],
-        verbose_name='Время приготовления',
+        verbose_name="Время приготовления",
     )
     is_favorited = models.ManyToManyField(
         User,
@@ -179,8 +179,8 @@ class FavoriteRecipes(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=[
-                        'recipe',
-                        'user',
+                    'recipe',
+                    'user',
                 ],
                 name='unique_favorite_recipe',
             ),

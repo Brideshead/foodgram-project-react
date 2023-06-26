@@ -45,11 +45,11 @@ class UsersViewSet(UserViewSet):
         return Response(serializer.data)
 
     @action(
-            methods=['POST', 'DELETE'],
-            detail=True,
-            url_name='subscribe',
-            url_path='subscribe',
-            permission_classes=(IsAuthenticated,),
+        methods=['POST', 'DELETE'],
+        detail=True,
+        url_name='subscribe',
+        url_path='subscribe',
+        permission_classes=(IsAuthenticated,),
     )
     def subscribe(self, request, id):
         if request.method == 'POST':
@@ -57,8 +57,8 @@ class UsersViewSet(UserViewSet):
             author = get_object_or_404(User, id=id)
             if user == author:
                 return Response(
-                        {'error': 'Вы не можете подписываться на себя!'},
-                        status=status.HTTP_400_BAD_REQUEST,
+                    {'error': 'Вы не можете подписываться на себя!'},
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             if Subscribe.objects.filter(user=user, subscriber=author).exists():
                 return Response(
@@ -160,11 +160,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return RecipeReadSeriaizer
 
     @action(
-            detail=True,
-            methods=['POST', 'DELETE'],
-            url_name='favorite',
-            url_path='favorite',
-            permission_classes=(IsAuthenticated,),
+        detail=True,
+        methods=['POST', 'DELETE'],
+        url_name='favorite',
+        url_path='favorite',
+        permission_classes=(IsAuthenticated,),
     )
     def favorite(self, request, pk):
         if request.method == 'POST':
@@ -193,11 +193,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
-            detail=True,
-            methods=['POST', 'DELETE'],
-            url_name='shopping_cart',
-            url_path='shopping_cart',
-            permission_classes=(IsAuthenticated,),
+        detail=True,
+        methods=['POST', 'DELETE'],
+        url_name='shopping_cart',
+        url_path='shopping_cart',
+        permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, pk):
         if request.method == 'POST':
