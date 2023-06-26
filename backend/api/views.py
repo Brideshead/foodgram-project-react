@@ -17,13 +17,20 @@ from rest_framework.response import Response
 
 
 class UsersViewSet(UserViewSet):
+    """Вьюсет пользователей.
 
+    def me:
+        Кто вошёл.
+    def subscribe:
+        Подписаться или отписаться от автора.
+        Подписаться на себя нельзя.
+    def subscriptions:
+        Получить на кого подписан пользователь.
+    def perfom_create:
+        Переопредления базового метода для
+        создания пользователя и изменения пароля.
+    """
     pagination_class = PageLimitPagination
-
-    # def get_serializer_class(self):
-    #     if self.request.method.lower() == 'post':
-    #         return UserCreateSerializer
-    #     return UserSerializer
 
     @action(
         detail=False,
@@ -89,8 +96,6 @@ class UsersViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,),
     )
     def subscriptions(self, request):
-        """Получить на кого пользователь подписан."""
-
         user = request.user
         queryset = Subscribe.objects.filter(user=user)
         pages = self.paginate_queryset(queryset)
@@ -129,6 +134,21 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """"Отображение рецептов.
+
+    def get_serializer_class:
+        В зависимости от запроса возвращает
+        сериализатор создания или чтение рецепта.
+    def favorite:
+        Добавить или убрать рецепт из избранного.
+    def shopping_cart:
+        Добавление или удаление рецепта из
+        спика покупок.
+    def download_shopping_cart:
+        Скачать список игредиентов для рецептов
+        добавленных в список покупок.
+    """
+
     queryset = Recipe.objects.all()
     permission_classes = (AdminAuthorOrReadOnly,)
     pagination_class = PageLimitPagination

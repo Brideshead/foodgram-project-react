@@ -122,24 +122,6 @@ class Recipe(models.Model):
         return f'Автор {self.author}, название рецепта: {self.name}.'
 
 
-# class Tagged(models.Model):
-#     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-#     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-
-#     class Meta:
-#         constraints = [
-#             models.UniqueConstraint(
-#                 fields=[
-#                     'recipe',
-#                     'tag',
-#                 ],
-#                 name='unique_tag_per_recipe',
-#             )
-#         ]
-#         verbose_name = 'tag_per_recipe'
-#         verbose_name_plural = 'tags_per_recipe'
-
-
 class IngredientsInRecipe(models.Model):
     recipe = models.ForeignKey(
         Recipe,
