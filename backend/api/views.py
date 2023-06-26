@@ -10,9 +10,8 @@ from django.db.models.aggregates import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingCart,
-                            IngredientsInRecipe,
-                            Subscribe, Tag, User)
+from recipes.models import (FavoriteRecipes, Ingredient, IngredientsInRecipe,
+                            Recipe, ShoppingCart, Subscribe, Tag, User)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -106,19 +105,17 @@ class UsersViewSet(UserViewSet):
         page = self.paginate_queryset(subscribers)
         if page is not None:
             serializer = SubscriptionSerializer(
-                page, 
+                page,
                 many=True,
-                context=
-                {
+                context={
                     'request': request,
                 },
             )
             return self.get_paginated_response(serializer.data)
         serializer = SubscriptionSerializer(
             subscribers,
-            many=True, 
-            context=
-            {
+            many=True,
+            context={
                 'request': request,
             },
         )
