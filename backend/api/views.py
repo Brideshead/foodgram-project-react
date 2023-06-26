@@ -263,7 +263,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         for item in buying_list:
             shopping_list.append(
                 f'{item} - {buying_list[item]["amount"]}, '
-                f'{buying_list[item]["measurement_unit"]}\n'
+                f'{buying_list[item]["measurement_unit"]}\n',
             )
         shopping_list_text = ''.join(shopping_list)
         response = HttpResponse(content_type='text/plain')

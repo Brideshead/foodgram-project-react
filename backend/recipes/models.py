@@ -51,7 +51,7 @@ class Ingredient(models.Model):
                     'measurement_unit',
                 ],
                 name='unique_ingredient',
-            )
+            ),
         ]
 
     def __str__(self):
