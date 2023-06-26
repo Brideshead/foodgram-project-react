@@ -249,7 +249,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         for items in ingredients:
             ingredient = get_object_or_404(
                 Ingredient,
-                ingredient_id=items.get('ingredient').get('id').id,
+                id=items.get('ingredient').get('id').id,
             )
             if ingredient in ingredient_list:
                 raise serializers.ValidationError(
@@ -286,7 +286,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             IngredientsInRecipe.objects.create(
                 recipe=recipe,
-                ingredient_id=ingredient.get('ingredient').get('id').id,
+                id=ingredient.get('ingredient').get('id').id,
                 amount=ingredient.get('amount'),
             )
         recipe.save()
@@ -307,7 +307,7 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             IngredientsInRecipe.objects.create(
                 recipe=instance,
-                ingredient_id=ingredient.get('ingredient').get('id').id,
+                id=ingredient.get('ingredient').get('id').id,
                 amount=ingredient.get('amount'),
             )
         instance.save()
