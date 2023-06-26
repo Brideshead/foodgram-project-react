@@ -356,7 +356,7 @@ class SubscribeRecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionSerializer(UserSerializer):
+class SubscriptionSerializer(serializers.ModelSerializer):
     """Сериализация подписчиков.
 
     def get_is_subscribed:
@@ -377,14 +377,14 @@ class SubscriptionSerializer(UserSerializer):
     username = serializers.StringRelatedField()
     first_name = serializers.StringRelatedField()
     last_name = serializers.StringRelatedField()
-    recipes = SubscribeRecipeSerializer(
+    recipes = RecipeReadSeriaizer(
         read_only=True,
         many=True,
     )
     recipes_count = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = Subscribe
         fields = (
             'id',
             'email',
