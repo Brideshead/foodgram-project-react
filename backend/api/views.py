@@ -261,7 +261,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # buying_list = {}
         # user = request.user
         shopping_cart = (
-            request.user.shopping_cart.recipe.
+            request.user.shopping_cart.recipes.
             values(
                 'ingredients__name',
                 'ingredients__measurement_unit'
