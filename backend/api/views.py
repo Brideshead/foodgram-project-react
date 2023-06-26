@@ -101,7 +101,7 @@ class UsersViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         subscribers = User.objects.filter(
-            id__in=request.user.subscribe.all().values('author_id'),
+            id__in=request.user.subscribe.all().values('subscriber_id'),
         )
 
         page = self.paginate_queryset(subscribers)
@@ -293,7 +293,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 'ingredients__name',
                 'ingredients__measurement_unit',
             ).annotate(
-                ingredient_value=Sum('amount'),
+                ingredient_value=Sum('ingredients_amount'),
             ),
         )
         # ingredients = IngredientsInRecipe.objects.filter(
