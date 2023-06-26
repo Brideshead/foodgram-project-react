@@ -12,7 +12,8 @@ from django.db.models.aggregates import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from recipes.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingCart,
+from recipes.models import (FavoriteRecipes, IngredientsInRecipe,
+                            Ingredient, Recipe, ShoppingCart,
                             Subscribe, Tag, User)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -284,21 +285,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         # buying_list = {}
         # user = request.user
-        recipes = (
-            Recipe.objects.filter(
-                shopping_cart__user=request.user,
-            ).order_by(
-                'ingredients__name',
-            ).values(
-                'ingredients__name',
-                'ingredients__measurement_unit',
-            ).annotate(
-                ingredient_value=Sum('ingredients_recipe_amount'),
-            ),
-        )
-        # ingredients = IngredientsInRecipe.objects.filter(
-        #     recipe__shopping_cart__user=user,
+        # recipes = (
+        #     Recipe.objects.filter(
+        #         shopping_cart__user=request.user,
+        #     ).order_by(
+        #         'ingredients__name',
+        #     ).values(
+        #         'ingredients__name',
+        #         'ingredients__measurement_unit',
+        #     ).annotate(
+        #         ingredient_value=Sum('ingredients_recipe_amount'),
+        #     ),
         # )
+        ingredients = IngredientsInRecipe.objects.filter(
+            recipe__shopping_cart__user=request.user,
+        ).values(
+            'ingredients__name',
+            'ingredients__measurement_unit',
+        ).annotate(
+            amount=Sum('recipe__amount'),
+        ).order_by()
         # for ingredient in ingredients:
         #     amount = ingredient.amount
         #     name = ingredient.ingredient.name
@@ -329,12 +335,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'Content-Disposition'
         ] = 'attachment; filename="shopping_list.txt"'
         writer = csv.writer(response)
-        for recipe in recipes:
+        for ingredient in ingredients:
             writer.writerow(
                 [
-                    f'Ингредиент: {recipe["ingredients__name"]}'
-                    f'Количество: {recipe["amount"]}'
-                    f'Ед. изм-я: {recipe["ingredients__measurement_unit"]}',
+                    f'Ингредиент: {ingredient["ingredients__name"]}'
+                    f'Количество: {ingredient["amount"]}'
+                    f'Ед. изм-я: {ingredient["ingredients__measurement_unit"]}',
                 ],
             )
         return response

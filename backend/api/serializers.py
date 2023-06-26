@@ -381,7 +381,7 @@ class SubscriptionSerializer(UserSerializer):
         read_only=True,
         many=True,
     )
-    # recipes_count = serializers.IntegerField(read_only=True)
+    recipes_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -410,8 +410,8 @@ class SubscriptionSerializer(UserSerializer):
     #     serializer = SubscribeRecipeSerializer(recipes, many=True)
     #     return serializer.data
 
-    # def get_recipes_count(self, instance):
-    #     return instance.subscriber.recipes.all().count()
+    def get_recipes_count(self, instance):
+        return instance.subscriber.recipes.all().count()
 
 
 class FavoriteShoppingCartSerializer(serializers.ModelSerializer):
