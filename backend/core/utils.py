@@ -8,8 +8,8 @@ def shopcart_or_favorite(self, request, model, serializer, pk):
         user = request.user
         recipe = self.get_object()
         if model.objects.filter(
-             user=user,
-             recipe=recipe,
+            user=user,
+            recipe=recipe,
         ).exists():
             return Response(
                 status=status.HTTP_400_BAD_REQUEST,
@@ -24,11 +24,11 @@ def shopcart_or_favorite(self, request, model, serializer, pk):
             status=status.HTTP_201_CREATED,
         )
     added_recipe = get_object_or_404(
-          model,
-          user=request.user,
-          recipe__id=pk,
+        model,
+        user=request.user,
+        recipe__id=pk,
     )
     added_recipe.delete()
     return Response(
-         status=status.HTTP_204_NO_CONTENT,
+        status=status.HTTP_204_NO_CONTENT,
     )
