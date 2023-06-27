@@ -6,7 +6,7 @@ from api.serializers import (FavoriteShoppingCartSerializer,
                              RecipeReadSeriaizer, SubscribeSerializer,
                              SubscriptionSerializer, TagSerializer)
 from core.utils import shopcart_or_favorite
-from django.db.models.aggregates import Sum, Count
+from django.db.models.aggregates import Count, Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
