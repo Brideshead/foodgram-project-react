@@ -348,7 +348,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         fields = ('user', 'subscriber')
 
 
-class SubscribeRecipeSerializer(serializers.ModelSerializer):
+class SubscribeRecipeSerializer(RecipeReadSeriaizer):
     """Сериализация рецептов для подписки."""
     class Meta:
         model = Recipe
@@ -356,7 +356,7 @@ class SubscribeRecipeSerializer(serializers.ModelSerializer):
         read_only_fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionSerializer(serializers.ModelSerializer):
+class SubscriptionSerializer(UserSerializer):
     """Сериализация подписчиков.
 
     def get_is_subscribed:
@@ -366,25 +366,23 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     def get_recipes_count:
         Получение количества рецептов.
     """
-    email = serializers.ReadOnlyField(source='subscriber.email')
-    id = serializers.ReadOnlyField(source='subscriber.id')
-    username = serializers.ReadOnlyField(source='subscriber.username')
-    first_name = serializers.ReadOnlyField(source='subscriber.first_name')
-    last_name = serializers.ReadOnlyField(source='subscriber.last_name')
-    is_subscribed = serializers.BooleanField(read_only=True)
+    # email = serializers.ReadOnlyField(source='subscriber.email')
+    # id = serializers.ReadOnlyField(source='subscriber.id')
+    # username = serializers.ReadOnlyField(source='subscriber.username')
+    # first_name = serializers.ReadOnlyField(source='subscriber.first_name')
+    # last_name = serializers.ReadOnlyField(source='subscriber.last_name')
+    # is_subscribed = serializers.BooleanField(read_only=True)
     # recipes = serializers.SerializerMethodField()
     # email = serializers.StringRelatedField()
     # username = serializers.StringRelatedField()
     # first_name = serializers.StringRelatedField()
     # last_name = serializers.StringRelatedField()
-    recipes = RecipeReadSeriaizer(
+    recipes = SubscribeRecipeSerializer(
         read_only=True,
-        many=True,
     )
     recipes_count = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Subscribe
+    class Meta(UserSerializer.Meta):
         fields = (
             'id',
             'email',

@@ -329,17 +329,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #     'Content-Disposition'
         # ] = 'attachment; filename="shopping_list.txt"'
         # response.write(shopping_list_text)
-        response = HttpResponse(content_type='txt/csv')
+        shopping_list = []
+        for ingredient in ingredients:
+            shopping_list.append(
+                [
+                    f'{ingredient["ingredient__name"]}-{ingredient["amount"]},'
+                    f'{ingredient["ingredient__measurement_unit"]}\n',
+                ],
+            )
+        shopping_list_text = ''.join(shopping_list)
+        response = HttpResponse(content_type='text/plain')
         response[
             'Content-Disposition'
         ] = 'attachment; filename="shopping_list.txt"'
-        writer = csv.writer(response)
-        for ingredient in ingredients:
-            writer.writerow(
-                [
-                    f'Ингредиент: {ingredient["ingredient__name"]}'
-                    f'Количество: {ingredient["amount"]}'
-                    f'Ед.изм-я: {ingredient["ingredient__measurement_unit"]}',
-                ],
-            )
+        response.write(shopping_list_text)
         return response
