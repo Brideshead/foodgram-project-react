@@ -278,7 +278,6 @@ class RecipeAddSerializer(serializers.ModelSerializer):
         )
         recipe.tags.set(tags)
         self.add_ingredients(recipe, ingredients)
-        recipe.save()
         return recipe
 
     def update(self, recipe, validated_data):

@@ -74,22 +74,20 @@ class UsersViewSet(UserViewSet):
                 context={'request': request},
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        if request.method == 'DELETE':
-            user = request.user
-            author = get_object_or_404(User, id=id)
-            if user == author:
-                return Response(
-                    {'error': 'Вы не можете отписаться от самого себя!'},
-                )
-            subscriber = Subscribe.objects.filter(user=user, subscriber=author)
-            if subscriber.exists():
-                subscriber.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
+        user = request.user
+        author = get_object_or_404(User, id=id)
+        if user == author:
             return Response(
+                {'error': 'Вы не можете отписаться от самого себя!'},
+            )
+        subscriber = Subscribe.objects.filter(user=user, subscriber=author)
+        if subscriber.exists():
+            subscriber.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(
                 {'error': 'Вы не подписаны!'},
                 serializer.data,
             )
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=['GET'],
@@ -211,12 +209,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'ingredient__name',
             'ingredient__measurement_unit',
         ).annotate(
-            amount=Sum('amount'),
+            total=Sum('amount'),
         ).order_by()
         shopping_list = []
         for ingredient in ingredients:
             shopping_list.append(
-                f'{ingredient["ingredient__name"]}-{ingredient["amount"]},'
+                f'{ingredient["ingredient__name"]}-{ingredient["total"]},'
                 f'{ingredient["ingredient__measurement_unit"]}\n',
             )
         shopping_list_text = ''.join(shopping_list)
