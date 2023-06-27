@@ -108,7 +108,64 @@ docker-compose exec backend python manage.py collectstatic --no-input
 sudo docker-compose exec backend python manage.py load_tags
 ```
 
+### Примеры запросов:
+```
+POST | Создание рецепта: http://51.250.87.5/api/recipes/
 
+Request:
+    {
+        "ingredients": [
+            {
+                "id": 1123,
+                "amount": 10
+            },
+        ],
+        "tags": [
+            1,
+            2
+        ],
+        "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg==",
+        "name": "string",
+        "text": "string",
+        "cooking_time": 1,
+    }
+
+Response:
+    {
+        "id": 0,
+        "tags": [
+            {
+                "id": 0,
+                 "name": "Завтрак",
+                 "color": "#E28C2D",
+                 "slug": "breakfast",
+            },
+        ],
+        "author": {
+            "email": "user@example.com",
+            "id": 0,
+            "username": "string",
+            "first_name": "Саша",
+            "last_name": "Бо",
+            "is_subscribed": false,
+        },
+        "ingredients": [
+            {
+                "id": 0,
+                "name": "Картофель отварной",
+                "measurement_unit": "г",
+                "amount": 1
+            },
+        ],
+        "is_favorited": true,
+        "is_in_shopping_cart": true,
+        "name": "string",
+        "image": "http://foodgram.example.org/media/recipes/images/image.jpeg",
+        "text": "string",
+        "cooking_time": 1
+    }
+
+```
 
 ### Автор проекта:
 
