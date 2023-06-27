@@ -85,9 +85,9 @@ class UsersViewSet(UserViewSet):
             subscriber.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(
-                {'error': 'Вы не подписаны!'},
-                serializer.data,
-            )
+            {'error': 'Вы не подписаны!'},
+            serializer.data,
+        )
 
     @action(
         methods=['GET'],
