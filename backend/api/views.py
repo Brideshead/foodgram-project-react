@@ -1,5 +1,3 @@
-import csv
-
 from api.filters import IngredientsFilter, RecipesFilter
 from api.pagination import PageLimitPagination
 from api.permissions import AdminAuthorOrReadOnly, AdminOrReadOnly
