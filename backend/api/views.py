@@ -6,7 +6,7 @@ from api.serializers import (FavoriteShoppingCartSerializer,
                              RecipeReadSeriaizer, SubscribeSerializer,
                              SubscriptionSerializer, TagSerializer)
 from core.utils import shopcart_or_favorite
-from django.db.models.aggregates import Sum
+from django.db.models.aggregates import Sum, Count
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
@@ -100,26 +100,16 @@ class UsersViewSet(UserViewSet):
     def subscriptions(self, request):
         subscribers = User.objects.filter(
             id__in=request.user.subscribe.all().values('subscriber_id'),
-        )
-
-        page = self.paginate_queryset(subscribers)
-        if page is not None:
-            serializer = SubscriptionSerializer(
-                page,
-                many=True,
-                context={
-                    'request': request,
-                },
-            )
-            return self.get_paginated_response(serializer.data)
+        ).annotate(recipes_count=Count('recipes'))
+        pages = self.paginate_queryset(subscribers)
         serializer = SubscriptionSerializer(
-            subscribers,
             many=True,
+            instance=pages,
             context={
                 'request': request,
             },
         )
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)
         # user = request.user
         # queryset = Subscribe.objects.filter(user=user)
         # pages = self.paginate_queryset(queryset)
@@ -330,10 +320,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         shopping_list = []
         for ingredient in ingredients:
             shopping_list.append(
-                [
-                    f'{ingredient["ingredient__name"]}-{ingredient["amount"]},'
-                    f'{ingredient["ingredient__measurement_unit"]}\n',
-                ],
+                f'{ingredient["ingredient__name"]}-{ingredient["amount"]},'
+                f'{ingredient["ingredient__measurement_unit"]}\n',
             )
         shopping_list_text = ''.join(shopping_list)
         response = HttpResponse(content_type='text/plain')
