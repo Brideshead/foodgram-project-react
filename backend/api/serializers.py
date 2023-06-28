@@ -319,9 +319,24 @@ class SubscribeSerializer(serializers.ModelSerializer):
         fields = ('user', 'subscriber')
 
 
+class LimitRecipeForSubscriptionsSerializer(serializers.ListSerializer):
+    """Ограниченный вывод рецептов на странице подписки."""
+    def to_representation(self, data):
+        limit_recipe = self.context.get(
+            'request',
+        ).query_params.get('recipes_limit')
+        if limit_recipe:
+            data = data.all()[:int(limit_recipe)]
+        return super(
+            LimitRecipeForSubscriptionsSerializer,
+            self
+        ).to_representation(data)
+
+
 class SubscribeRecipeSerializer(RecipeReadSeriaizer):
     """Сериализация рецептов для подписки."""
     class Meta:
+        list_serilizer_class = LimitRecipeForSubscriptionsSerializer
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
