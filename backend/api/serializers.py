@@ -336,7 +336,7 @@ class LimitRecipeForSubscriptionsSerializer(serializers.ListSerializer):
 class SubscribeRecipeSerializer(RecipeReadSeriaizer):
     """Сериализация рецептов для подписки."""
     class Meta:
-        list_serilizer_class = LimitRecipeForSubscriptionsSerializer
+        list_serializer_class = LimitRecipeForSubscriptionsSerializer
         model = Recipe
         fields = ('id', 'name', 'image', 'cooking_time')
 
